@@ -1,5 +1,7 @@
 # namastecita.analytics_322272818.events_2023*
 
+CREATE OR REPLACE TABLE `namastecita.lookerstudio.events2023` AS
+
 WITH sessions as (
 
   SELECT
@@ -12,6 +14,8 @@ WITH sessions as (
 
 SELECT
  distinct s.session_id,
+ f.user_pseudo_id,
+ event_date,
  event_timestamp,
  event_name,
  event_params.key parametro,
