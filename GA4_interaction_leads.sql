@@ -1,29 +1,27 @@
-# namastecita.analytics_322272818.events_2023*
-
 CREATE OR REPLACE TABLE `namastecita.lookerstudio.events2023` AS
 
-WITH sessions as (
-
-  SELECT
-  user_pseudo_id,
-  CONCAT(user_pseudo_id,(select value.int_value from unnest(event_params) where key = 'ga_session_id')) as session_id
+WITH sessions AS (
+  SELECT DISTINCT
+    user_pseudo_id,
+    CONCAT(user_pseudo_id, (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'ga_session_id')) AS session_id
   FROM `namastecita.analytics_322272818.events_2023*`
-
 )
 
 
+
 SELECT
- distinct s.session_id,
- f.user_pseudo_id,
- event_date,
- event_timestamp,
- event_name,
- event_params.key parametro,
- event_params.value.string_value,
- event_params.value.int_value
+  f.user_pseudo_id,
+  s.session_id,
+  event_date,
+  TIMESTAMP_MICROS(event_timestamp) as event_timestamp,
+  event_name,
+  event_params.key parametro,
+  event_params.value.string_value,
+  event_params.value.int_value
 
 FROM `namastecita.analytics_322272818.events_2023*` f ,unnest(event_params) event_params
 
-JOIN sessions s ON f.user_pseudo_id=s.user_pseudo_id
+JOIN sessions s ON f.user_pseudo_id = s.user_pseudo_id AND s.session_id = CONCAT(f.user_pseudo_id, (SELECT value.int_value FROM UNNEST(f.event_params) WHERE key = 'ga_session_id'))
 
-WHERE s.session_id IN (SELECT CONCAT(user_pseudo_id,(select value.int_value from unnest(event_params) where key = 'ga_session_id')) as session_id FROM `namastecita.analytics_322272818.events_2023*`)
+
+GROUP BY 1,2,3,4,5,6,7,8
