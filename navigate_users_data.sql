@@ -5,7 +5,7 @@ DISTINCT user_pseudo_id, event_timestamp
 
 FROM `lookerstudio.events2023`
 WHERE event_date='20231117'
-AND event_name = 'purchase'
+AND event_name = 'purchase' 
 
 
 --- We can know by the timestamp that matches the sale 20.07 that the user_pseudo_id is 1172063761.1699599262 (string format)
